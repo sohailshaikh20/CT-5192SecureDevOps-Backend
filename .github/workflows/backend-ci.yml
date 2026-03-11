@@ -9,12 +9,11 @@ on:
       - main
 
 jobs:
-  build-test:
-    name: Build and Test Backend
+  backend-ci:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -22,12 +21,19 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
           cd backend-flask
           pip install -r requirements.txt
 
-      - name: Run Tests
+      - name: Run tests
         run: |
           cd backend-flask
           pytest
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          projectBaseDir: backend-flask
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
