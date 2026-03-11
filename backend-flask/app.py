@@ -12,6 +12,12 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app)
 
+# ---------- vulnerability introduced for sonarCloud detection ------
+# Hardcoded credentials (security vulnerability)
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "superadmin123"
+# -----------------------------------------------------
+
 # Vulnerable configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///learning.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -532,6 +538,19 @@ def grade_student():
         print(f"Error submitting grade: {str(e)}")
         return jsonify({'message': 'Error submitting grade'}), 500
 
+
+# ------------- vulnerability introduced for sonarCloud detection --------
+# Command Injection vulnerability
+@app.route('/api/run-command', methods=['GET'])
+def run_command():
+    command = request.args.get("cmd")
+
+    # Vulnerable: executing user input directly
+    os.system(command)
+
+    return jsonify({"message": "Command executed"})
+
+# -------------------------------------------------------------------
 
 if __name__ == '__main__':
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
