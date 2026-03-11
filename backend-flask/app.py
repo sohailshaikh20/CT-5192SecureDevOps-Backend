@@ -12,7 +12,7 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app)
 
-# ---------- vulnerability introduced for ZAP detection ------
+# ---------- vulnerability introduced ------
 # Hardcoded credentials (security vulnerability)
 ADMIN_USERNAME = "admin"
 ADMIN_PASSWORD = "superadmin123"
@@ -539,17 +539,20 @@ def grade_student():
         return jsonify({'message': 'Error submitting grade'}), 500
 
 
-# ------------- vulnerability introduced for sonarCloud detection --------
-# Command Injection vulnerability
-@app.route('/api/run-command', methods=['GET'])
-def run_command():
-    command = request.args.get("cmd")
+# ---------------- Vulnerability introduced --------
+# Missing security headers vulnerability
+@app.route('/api/zap-vulnerable', methods=['GET'])
+def zap_vulnerable():
+    response = jsonify({
+        "message": "This endpoint intentionally lacks security headers for ZAP detection"
+    })
 
-    # Vulnerable: executing user input directly
-    os.system(command)
+    # Intentionally NOT adding security headers like:
+    # X-Frame-Options
+    # X-Content-Type-Options
+    # Content-Security-Policy
 
-    return jsonify({"message": "Command executed"})
-
+    return response
 # -------------------------------------------------------------------
 
 if __name__ == '__main__':
