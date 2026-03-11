@@ -13,25 +13,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Setup Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
+      # Install dependencies
       - name: Install dependencies
         run: |
-          cd backend-flask
-          pip install -r requirements.txt
+          pip install -r backend-flask/requirements.txt
           pip install pytest
 
+      # Run backend tests
       - name: Run tests
         run: |
           cd backend-flask
           pytest
 
+      # SonarCloud analysis
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         with:
@@ -42,6 +46,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+      # Snyk security scan
       - name: Run Snyk Security Scan
         uses: snyk/actions/python@master
         with:
