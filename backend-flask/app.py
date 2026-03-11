@@ -12,7 +12,7 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app)
 
-# ---------- vulnerability introduced for sonarCloud detection ------
+# ---------- vulnerability introduced for ZAP detection ------
 # Hardcoded credentials (security vulnerability)
 ADMIN_USERNAME = "admin"
 ADMIN_PASSWORD = "superadmin123"
